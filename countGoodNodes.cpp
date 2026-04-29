@@ -12,27 +12,20 @@
 class Solution {
 public:
 
-    void dfs(TreeNode* node, int* num_good, vector<int> seen){
+    void dfs(TreeNode* node, int* num_good, int* path_max){
         bool addValue = true;
-        vector<int> newSeen;
-        for(int i{0}; i < seen.size(); i++){
-            newSeen.push_back(seen[i]);
-            if(seen[i] > node->val){
-                addValue = false;
-            }
-        }
-        newSeen.push_back(node->val);
-
-        if(addValue){
+        
+        int newPathMax = *path_max;
+        if(node->val >= *path_max){
+            (newPathMax) = node->val;
             (*num_good)++;
-
         }
 
         if(node->right){
-            dfs(node->right, num_good, newSeen);
+            dfs(node->right, num_good, &newPathMax);
         }
         if(node->left){
-            dfs(node->left, num_good, newSeen);
+            dfs(node->left, num_good, &newPathMax);
         }
 
     }
@@ -45,17 +38,17 @@ public:
         each time, check if any of the values in the array are larger
         than the current one, if they are, then do not add to number
         of good nodes, 
-        O(n^2) pretty much runtime
+        O(n) pretty much runtime
         O(n^2) memory
         */
         int num_good = 1;
-        vector<int> seen;
-        seen.push_back(root->val);
+        int path_max = root->val;
+
         if(root->left){
-            dfs(root->left, &num_good, seen);
+            dfs(root->left, &num_good, &path_max);
         } 
         if(root->right){
-            dfs(root->right, &num_good, seen);
+            dfs(root->right, &num_good, &path_max);
         }
 
         return num_good;
